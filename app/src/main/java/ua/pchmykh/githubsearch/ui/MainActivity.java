@@ -1,35 +1,35 @@
 package ua.pchmykh.githubsearch.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 
-import java.util.List;
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import ua.pchmykh.githubsearch.GitHubSearchApp;
 import ua.pchmykh.githubsearch.R;
-import ua.pchmykh.githubsearch.net.GithubHttpApi;
-import ua.pchmykh.githubsearch.net.pojo.user.Item;
-import ua.pchmykh.githubsearch.net.pojo.user.JsonUser;
+import ua.pchmykh.githubsearch.Util;
+import ua.pchmykh.githubsearch.mvp.presentor.MainPresentor;
+import ua.pchmykh.githubsearch.mvp.view.MainView;
+import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
+import ua.pchmykh.githubsearch.ui.adapter.CustomItemClickListener;
 import ua.pchmykh.githubsearch.ui.adapter.UsersAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MvpAppCompatActivity implements MainView{
+
+    final public static String TAG = "MainActivity";
 
     @BindView(R.id.edit_user_repo)
     EditText editeUserRepo;
@@ -37,13 +37,25 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.list_user_repo)
     RecyclerView recyclerView;
 
+    @InjectPresenter
+    MainPresentor mainPresentor;
+
+    private UsersAdapter usersAdapter;
+
+    private AlertDialog error;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        final UsersAdapter usersAdapter = new UsersAdapter();
+        usersAdapter = new UsersAdapter(new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                mainPresentor.intentRepository(usersAdapter.getUser(position));
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(usersAdapter);
 
@@ -55,28 +67,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()>= 3) {
-                    GitHubSearchApp.getApi().getGithubRepo(editeUserRepo.getText().toString()).enqueue(new Callback<JsonUser>() {
-
-                        @Override
-                        public void onResponse(Call<JsonUser> call, Response<JsonUser> response) {
-                            if (response.body()!=null)
-                            usersAdapter.setItems(response.body().getItems());
-                        }
-
-                        @Override
-                        public void onFailure(Call<JsonUser> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
-                }else {
-                    usersAdapter.clearItems();
+                if (s.length()>= 3 && mainPresentor.getSizeText()!=s.length()) {
+                    mainPresentor.setUpdate(true);
+                    mainPresentor.setSizeText(s.length());
+                    mainPresentor.loadNewItem(editeUserRepo.getText().toString(), Util.checkInetConnect(getApplicationContext()));
+                }else if (editeUserRepo.length()==0){
+                    mainPresentor.setUpdate(false);
+                    mainPresentor.cleanItems();
                 }
             }
 
@@ -84,25 +85,58 @@ public class MainActivity extends AppCompatActivity {
         editeUserRepo.addTextChangedListener(passwordWatcher);
     }
 
+
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void setItemToList(JsonFullUser items) {
+
+            usersAdapter.setItems(items);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void cleanItems() {
+        usersAdapter.clearItems();
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mainPresentor.closeError();
+    }
 
-        return super.onOptionsItemSelected(item);
+
+
+    @Override
+    public void showError(String textError) {
+        if (error!=null)
+            error.cancel();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Опаньки...");
+        builder.setMessage(textError);
+        builder.setCancelable(false);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mainPresentor.closeError();
+            }
+        });
+        error = builder.create();
+        error.show();
+
+    }
+
+    @Override
+    public void closeError() {
+        if (error!=null)
+            error.cancel();
+    }
+
+    @Override
+    public void intentRepo(String login) {
+        Intent intent = new Intent(MainActivity.this,RepoActivity.class);
+        intent.putExtra("login",login);
+        startActivity(intent);
+
     }
 }

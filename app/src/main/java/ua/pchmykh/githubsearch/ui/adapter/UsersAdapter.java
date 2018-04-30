@@ -2,6 +2,8 @@ package ua.pchmykh.githubsearch.ui.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +14,39 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ua.pchmykh.githubsearch.R;
-import ua.pchmykh.githubsearch.net.pojo.user.Item;
+import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
 
 public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder>{
 
-    private List<Item> list = new ArrayList<>();
+    private List<JsonFullUser> list = new ArrayList<>();
+    private LinkedHashSet<JsonFullUser> reverseView = new LinkedHashSet<>();
+    private CustomItemClickListener listener;
+
+
+    public UsersAdapter(CustomItemClickListener listener) {
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
     public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false);
-        return new UsersViewHolder(view);
+        final UsersViewHolder mViewHolder = new UsersViewHolder(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(v, mViewHolder.getAdapterPosition());
+            }
+        });
+        return mViewHolder;
     }
 
     @Override
@@ -40,25 +59,29 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHo
         return list.size();
     }
 
-    public void setItems(Collection<Item> tweets) {
+    public JsonFullUser getUser(int pos){
+        return list.get(pos);
+    }
+
+    public void setItems(JsonFullUser users) {
         list.clear();
-        list.addAll(tweets);
+        reverseView.add(users);
+        list.addAll(reverseView);
+        Collections.reverse(list);
         notifyDataSetChanged();
     }
 
     public void clearItems() {
         list.clear();
+        reverseView.clear();
         notifyDataSetChanged();
     }
 
-    class UsersViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.search_logo)
+    class UsersViewHolder extends RecyclerView.ViewHolder  {
+
         ImageView searchLogo;
-        @BindView(R.id.search_name)
         TextView searchName;
-        @BindView(R.id.search_address)
         TextView searchAddress;
-        @BindView(R.id.search_link)
         TextView searchLink;
 
          UsersViewHolder(View itemView) {
@@ -66,12 +89,17 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHo
             ButterKnife.bind(itemView);
             searchName = itemView.findViewById(R.id.search_name);
             searchLogo = itemView.findViewById(R.id.search_logo);
+            searchLink = itemView.findViewById(R.id.search_link);
+            searchAddress = itemView.findViewById(R.id.search_address);
         }
 
-         void init(Item user){
+         void init(JsonFullUser user){
             Picasso.get().load(user.getAvatarUrl()).into(searchLogo);
             searchName.setText(user.getLogin());
-        }
+            searchAddress.setText(user.getLocation());
+            searchLink.setText(user.getBlog());
+         }
+
     }
 
 }

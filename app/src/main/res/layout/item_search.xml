@@ -2,22 +2,28 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    >
 
     <ImageView
         android:id="@+id/search_logo"
-        android:layout_width="86dp"
-        android:layout_height="86dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+
          />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="25dp"
         >
         <TextView
             android:id="@+id/search_name"
             android:layout_width="wrap_content"
+            android:textStyle="bold"
+            android:textSize="9pt"
+            android:textColor="@android:color/black"
             android:layout_height="wrap_content"
             />
         <TextView
@@ -28,8 +34,10 @@
 
         <TextView
             android:id="@+id/search_link"
+            android:autoLink="web"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColorLink="#93c7de"
             />
     </LinearLayout>
 </LinearLayout>
