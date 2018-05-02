@@ -16,7 +16,6 @@ public class RepoActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Toast.makeText(this,getIntent().getStringExtra("login"),Toast.LENGTH_LONG).show();
-        ;
 
     }
 

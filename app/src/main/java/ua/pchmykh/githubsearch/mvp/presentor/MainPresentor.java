@@ -1,6 +1,5 @@
 package ua.pchmykh.githubsearch.mvp.presentor;
 
-import android.os.Build;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -85,7 +84,7 @@ public class MainPresentor extends MvpPresenter<MainView> {
     }
 
     public void intentRepository(JsonFullUser user){
-        getViewState().intentRepo(user.getLogin());
+        getViewState().intentRepo(user);
     }
 
 
