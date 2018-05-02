@@ -20,7 +20,7 @@ import ua.pchmykh.githubsearch.R;
 import ua.pchmykh.githubsearch.Util;
 import ua.pchmykh.githubsearch.mvp.presentor.MainPresentor;
 import ua.pchmykh.githubsearch.mvp.view.MainView;
-import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
+import ua.pchmykh.githubsearch.net.pojo.JsonFullUser;
 import ua.pchmykh.githubsearch.ui.adapter.CustomItemClickListener;
 import ua.pchmykh.githubsearch.ui.adapter.UsersAdapter;
 

@@ -17,7 +17,7 @@ import ua.pchmykh.githubsearch.BuildConfig;
 import ua.pchmykh.githubsearch.GitHubSearchApp;
 import ua.pchmykh.githubsearch.Util;
 import ua.pchmykh.githubsearch.mvp.view.MainView;
-import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
+import ua.pchmykh.githubsearch.net.pojo.JsonFullUser;
 
 @InjectViewState
 public class MainPresentor extends MvpPresenter<MainView> {
@@ -34,33 +34,31 @@ public class MainPresentor extends MvpPresenter<MainView> {
     public void loadNewItem(String q,boolean inet){
 
         if (inet){
-            GitHubSearchApp.getApi().getFullInfoUser(q).enqueue(new Callback<JsonFullUser>() {
-            @Override
-            public void onResponse(Call<JsonFullUser> call, Response<JsonFullUser> response) {
-                if (response.body()!=null) {
-                    if (update) {
-                        getViewState().setItemToList(customiseResponse(response.body()));
+                GitHubSearchApp.getApi().getFullInfoUser(q).enqueue(new Callback<JsonFullUser>() {
+                @Override
+                public void onResponse(Call<JsonFullUser> call, Response<JsonFullUser> response) {
+                    if (response.body()!=null) {
+                        if (update) {
+                            getViewState().setItemToList(customiseResponse(response.body()));
+                            }
                         }
+                        else if (response.errorBody()!=null) {
+                            try {
+                                getViewState().showError(new JSONObject(response.errorBody().string()).getString("message"));
+                            } catch (IOException|JSONException e) {
+                                if (BuildConfig.DEBUG)
+                                    Log.d(TAG,e.getMessage());
+                            }
                     }
-                    else if (response.errorBody()!=null) {
-
-                        try {
-                            getViewState().showError(new JSONObject(response.errorBody().string()).getString("message"));
-                        } catch (IOException|JSONException e) {
-                            if (BuildConfig.DEBUG)
-                                Log.d(TAG,e.getMessage());
-                        }
-
                 }
-            }
 
-            @Override
-            public void onFailure(Call<JsonFullUser> call, Throwable t) {
-                getViewState().showError(t.getMessage());
-                if (BuildConfig.DEBUG)
-                    Log.e(TAG,t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<JsonFullUser> call, Throwable t) {
+                    getViewState().showError(t.getMessage());
+                    if (BuildConfig.DEBUG)
+                        Log.e(TAG,t.getMessage());
+                }
+            });
         }else {
             getViewState().showError("No Internet connection");
         }

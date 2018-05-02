@@ -17,7 +17,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import ua.pchmykh.githubsearch.R;
-import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
+import ua.pchmykh.githubsearch.net.pojo.JsonFullUser;
 
 public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder>{
 
@@ -94,7 +94,6 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHo
             searchAddress.setText(user.getLocation());
             searchLink.setText(user.getBlog());
          }
-
     }
 
 }

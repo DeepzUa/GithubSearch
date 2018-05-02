@@ -2,7 +2,7 @@ package ua.pchmykh.githubsearch.mvp.view;
 
 import com.arellomobile.mvp.MvpView;
 
-import ua.pchmykh.githubsearch.net.pojo.user.JsonFullUser;
+import ua.pchmykh.githubsearch.net.pojo.JsonFullUser;
 
 public interface MainView extends MvpView {
 

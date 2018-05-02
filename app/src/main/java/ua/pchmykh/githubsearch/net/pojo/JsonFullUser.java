@@ -1,5 +1,5 @@
 
-package ua.pchmykh.githubsearch.net.pojo.user;
+package ua.pchmykh.githubsearch.net.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
