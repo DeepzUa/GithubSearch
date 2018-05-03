@@ -8,7 +8,6 @@ import ua.pchmykh.githubsearch.net.pojo.JsonRepo;
 
 public interface RepoView extends MvpView {
     void setItemToList(List<JsonRepo> item);
-    void cleanItems();
 
     void showError(String textError);
     void closeError();
