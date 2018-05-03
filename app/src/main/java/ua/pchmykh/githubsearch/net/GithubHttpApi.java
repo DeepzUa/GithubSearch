@@ -15,5 +15,5 @@ public interface GithubHttpApi {
     Call<JsonFullUser> getFullInfoUser(@Path("name") String name);
 
     @GET("/users/{name}/repos")
-    Call<List<JsonRepo>> getRepos(@Path("name") String nameRepo);
+    Call<List<JsonRepo>> getRepos(@Path("name") String nameRepo, @Query("per_page") int pre_page, @Query("page") int page);
 }

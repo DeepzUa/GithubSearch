@@ -21,7 +21,6 @@ import ua.pchmykh.githubsearch.Util;
 import ua.pchmykh.githubsearch.mvp.presentor.MainPresentor;
 import ua.pchmykh.githubsearch.mvp.view.MainView;
 import ua.pchmykh.githubsearch.net.pojo.JsonFullUser;
-import ua.pchmykh.githubsearch.ui.adapter.CustomItemClickListener;
 import ua.pchmykh.githubsearch.ui.adapter.UsersAdapter;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView{
@@ -47,12 +46,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        usersAdapter = new UsersAdapter(new CustomItemClickListener() {
+        usersAdapter = new UsersAdapter(new UsersAdapter.ItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                mainPresentor.intentRepository(usersAdapter.getUser(position));
+                intentRepos(usersAdapter.getUser(position));
             }
         });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(usersAdapter);
 
@@ -129,8 +129,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView{
             error.cancel();
     }
 
-    @Override
-    public void intentRepo(JsonFullUser login) {
+
+    public void intentRepos(JsonFullUser login) {
         Intent intent = new Intent(MainActivity.this,RepoActivity.class);
         intent.putExtra("login",login.getLogin());
         intent.putExtra("public_repo",login.getPublicRepos());

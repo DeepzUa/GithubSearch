@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -13,6 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ua.pchmykh.githubsearch.R;
+import ua.pchmykh.githubsearch.Util;
 import ua.pchmykh.githubsearch.mvp.presentor.RepoPresentor;
 import ua.pchmykh.githubsearch.mvp.view.RepoView;
 import ua.pchmykh.githubsearch.net.pojo.JsonRepo;
@@ -30,7 +32,7 @@ public class RepoActivity extends MvpAppCompatActivity implements RepoView {
 
     private RepoAdapter repoAdapter;
     private String githubLogin;
-
+    private int publicRepos;
 
 
     @Override
@@ -38,16 +40,29 @@ public class RepoActivity extends MvpAppCompatActivity implements RepoView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        githubLogin = getIntent().getStringExtra("login");
+        publicRepos = getIntent().getIntExtra("public_repo",0);
+
+        toolbar.setTitle(githubLogin+" Repositories ("+publicRepos+")");
+
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
-        githubLogin = getIntent().getStringExtra("login");
+
 
         repoAdapter = new RepoAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(repoAdapter);
-        if (repoPresentor.isUpdate())
-            repoPresentor.loadRepos(githubLogin);
+
+        Log.d(TAG, Util.getPages(publicRepos)+"");
+
+        if (repoPresentor.isUpdate()) {
+            for (int i=1;i<=Util.getPages(publicRepos);i++)
+            repoPresentor.loadRepos(githubLogin, i);
+
+        }
+
 
     }
 
@@ -70,4 +85,7 @@ public class RepoActivity extends MvpAppCompatActivity implements RepoView {
     public void closeError() {
 
     }
+
+
+
 }

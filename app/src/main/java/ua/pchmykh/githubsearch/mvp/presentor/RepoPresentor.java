@@ -16,11 +16,11 @@ import ua.pchmykh.githubsearch.net.pojo.JsonRepo;
 public class RepoPresentor extends MvpPresenter<RepoView> {
 
     final public static String TAG = "RepoPresentor";
-    boolean update = true;
+    private boolean update = true;
 
-    public void loadRepos(String login){
+    public void loadRepos(String login,int page){
 
-        GitHubSearchApp.getApi().getRepos(login).enqueue(new Callback<List<JsonRepo>>() {
+        GitHubSearchApp.getApi().getRepos(login,100,page).enqueue(new Callback<List<JsonRepo>>() {
             @Override
             public void onResponse(Call<List<JsonRepo>> call, Response<List<JsonRepo>> response) {
                 if (response.body()!=null){
@@ -39,5 +39,4 @@ public class RepoPresentor extends MvpPresenter<RepoView> {
     public boolean isUpdate() {
         return update;
     }
-
 }

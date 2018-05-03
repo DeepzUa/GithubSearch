@@ -13,7 +13,7 @@ import java.util.List;
 import ua.pchmykh.githubsearch.R;
 import ua.pchmykh.githubsearch.net.pojo.JsonRepo;
 
-public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder>{
+public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder> {
 
     private List<JsonRepo> list = new ArrayList<>();
 
@@ -34,11 +34,13 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
     public int getItemCount() {
         return list.size();
     }
+
     public void setItems(List<JsonRepo> repo) {
         list.addAll(repo);
         notifyDataSetChanged();
     }
-    class RepoViewHolder extends RecyclerView.ViewHolder  {
+
+    class RepoViewHolder extends RecyclerView.ViewHolder {
 
         TextView repoName;
         TextView repoDesc;
@@ -50,10 +52,9 @@ public class RepoAdapter extends RecyclerView.Adapter<RepoAdapter.RepoViewHolder
 
         }
 
-        void init(JsonRepo repo){
+        void init(JsonRepo repo) {
             repoName.setText(repo.getName());
             repoDesc.setText(repo.getDescription());
         }
     }
-
 }

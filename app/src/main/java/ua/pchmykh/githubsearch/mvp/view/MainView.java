@@ -12,5 +12,5 @@ public interface MainView extends MvpView {
     void showError(String textError);
     void closeError();
 
-    void intentRepo(JsonFullUser login);
+   // void intentRepo(JsonFullUser login);
 }

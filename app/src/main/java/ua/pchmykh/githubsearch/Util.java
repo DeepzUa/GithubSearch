@@ -28,4 +28,18 @@ public class Util {
         return new String(custom);
 
     }
+
+    public static int getPages(int publicRepos){
+        int pages=0;
+
+        while (true){
+
+            publicRepos=publicRepos-100;
+            pages++;
+            if (publicRepos<=0)
+                break;
+
+        }
+        return pages;
+    }
 }

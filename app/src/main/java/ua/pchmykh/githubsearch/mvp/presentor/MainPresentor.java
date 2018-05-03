@@ -81,14 +81,8 @@ public class MainPresentor extends MvpPresenter<MainView> {
         return sizeText;
     }
 
-    public void intentRepository(JsonFullUser user){
-        getViewState().intentRepo(user);
-    }
-
-
     private JsonFullUser customiseResponse(JsonFullUser user){
         user.setLogin(Util.changeFirstChar(user.getLogin()));
-
         user.setBlog(user.getBlog().substring(Util.getSubStringToProtocol(user.getBlog())));
         return user;
     }

@@ -23,10 +23,10 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHo
 
     private List<JsonFullUser> list = new ArrayList<>();
     private LinkedHashSet<JsonFullUser> reverseView = new LinkedHashSet<>();
-    private CustomItemClickListener listener;
+    private ItemClickListener listener;
 
 
-    public UsersAdapter(CustomItemClickListener listener) {
+    public UsersAdapter(ItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -94,6 +94,11 @@ public class UsersAdapter  extends RecyclerView.Adapter<UsersAdapter.UsersViewHo
             searchAddress.setText(user.getLocation());
             searchLink.setText(user.getBlog());
          }
+    }
+
+    public interface ItemClickListener {
+
+        void onItemClick(View v, int position);
     }
 
 }
