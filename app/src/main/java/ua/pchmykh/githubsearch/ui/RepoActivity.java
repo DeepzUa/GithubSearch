@@ -9,7 +9,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -27,8 +26,6 @@ import ua.pchmykh.githubsearch.net.pojo.JsonRepo;
 import ua.pchmykh.githubsearch.ui.adapter.RepoAdapter;
 
 public class RepoActivity extends MvpAppCompatActivity implements RepoView {
-
-    final public static String TAG = "RepoActivity";
 
     @BindView(R.id.repos_list)
     RecyclerView recyclerView;
